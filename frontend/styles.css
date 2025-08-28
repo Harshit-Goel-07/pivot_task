@@ -1,0 +1,132 @@
+body {
+    font-family: sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 2rem;
+}
+
+/* Main Content Container */
+body > div {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 2rem;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+hr {
+    display: none; /* Hide the <hr> tags for a cleaner look */
+}
+
+
+/* Search Bar & Button */
+div:has(> #searchInput) {
+    display: flex;
+    margin-bottom: 1.5rem;
+}
+
+#searchInput {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+#searchButton {
+    padding: 10px 20px;
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: -1px; /* Aligns the buttons nicely */
+    border-radius: 0 4px 4px 0;
+}
+
+#searchButton:hover {
+    background-color: #0056b3;
+}
+/* Add this to your styles.css */
+.search-group {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Creates a nice space between the label, input, and button */
+}
+.hidden { display: none; }
+
+/* --- Results Table Styling --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    border: 1px solid #ddd;
+    table-layout: fixed; /* A classic, normal border */
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+thead th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Simple alternating row color */
+}
+
+th:nth-child(1) { width: 35%; } /* User ID column */
+th:nth-child(2) { width: 20%; } /* Name column */
+th:nth-child(3) { width: 30%; } /* Email column */
+th:nth-child(4) { width: 15%; } /* Country column */
+
+/* --- Download Button Styling --- */
+#downloadButton {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    color: white;
+    background-color: #28a745; /* A normal green */
+    border: 1px solid #28a745;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#downloadButton:hover {
+    background-color: #218838;
+}
+
+/* Add this to your styles.css file */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+.pagination button {
+    padding: 8px 16px;
+}
+.pagination span {
+    font-weight: bold;
+}
