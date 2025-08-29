@@ -39,10 +39,13 @@ Clone this repository to your local machine:
 ```bash
 git clone [https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git)
 cd YOUR_REPOSITORY_NAME
-3. Setup the Backend Environment
+```
+
+### 3. Setup the Backend Environment
+
 Create and activate a Python virtual environment:
 
-Bash
+```Bash
 
 # On Windows
 python -m venv venv
@@ -51,46 +54,54 @@ python -m venv venv
 # On macOS/Linux
 python3 -m venv venv
 source venv/bin/activate
+```
+
 Install the required packages:
 
-Bash
+```Bash
 
 pip install -r requirements.txt
-4. Start the Services
+```
+
+### 4. Start the Services
 1. Start the Elasticsearch Container
 Make sure Docker Desktop is running, then run this command in your terminal:
 
-Bash
+```Bash
 
 docker run -p 9200:9200 --name es-dev -e "discovery.type=single-node" -e "xpack.security.enabled=false" -d docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+```
 2. Run the Data Ingestion Script
 This script will create the index and populate it with mock data. This process will take several minutes.
 
-Bash
+```Bash
 
 cd data_ingestion
 python generate_and_ingest.py
 cd ..
+```
 3. Start the FastAPI Backend Server
 From the main project directory (pivot_task), run:
 
-Bash
+```Bash
 
 uvicorn main:app --reload --port 8001
+```
 Your backend is now running at http://127.0.0.1:8001.
 
-5. Run the Frontend
+### 5. Run the Frontend
 Open a new, separate terminal window.
 
 Navigate to the frontend folder and start a simple Python web server:
 
-Bash
+```Bash
 
 cd frontend
 python -m http.server
+```
 (Note: This usually runs on port 8000. If that port is busy, you can specify another, like python -m http.server 8080)
 
-6. Access the Application
+### 6. Access the Application
 Open your web browser and navigate to:
 http://localhost:8000 (or the port your frontend server is using).
 
