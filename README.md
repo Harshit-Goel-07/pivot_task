@@ -17,7 +17,7 @@ This project is a full-stack web application built to efficiently search, filter
 
 -   **Backend**: Python, FastAPI
 -   **Database**: Elasticsearch
--   **Frontend**: HTML, CSS, Vanilla JavaScript
+-   **Frontend**: HTML, CSS, JavaScript
 -   **Containerization**: Docker
 -   **Python Libraries**: `elasticsearch`, `uvicorn`, `faker`
 
@@ -37,8 +37,8 @@ Follow these instructions to set up and run the project on your local machine.
 
 Clone this repository to your local machine:
 ```bash
-git clone [https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git)
-cd YOUR_REPOSITORY_NAME
+git clone [https://github.com/Harshit-Goel-07/pivot_task.git](https://github.com/Harshit-Goel-07/pivot_task.git)
+cd pivot_task
 ```
 
 ### 3. Setup the Backend Environment
