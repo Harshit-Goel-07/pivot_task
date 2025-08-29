@@ -11,7 +11,7 @@ load_dotenv()
 
 app = FastAPI()
 
-es = Elasticsearch(f"http://localhost:{os.getenv('ES_PORT')}",  headers={"Accept": "application/vnd.elasticsearch+json; compatible-with=8"})
+es = Elasticsearch(f"http://localhost:{os.getenv('ES_PORT')}")
 INDEX_NAME = f"{os.getenv('ES_INDEX')}"
 
 app.add_middleware(
@@ -21,6 +21,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+def root():
+    return {"message": "Hello World"}
 
 @app.post("/search")
 def handle_search_requests(
@@ -98,6 +102,6 @@ def handle_download_requests(query: Optional[str] = Body(None, embed=True)):
     
     return StreamingResponse(
         stream_all_users(query),
-        media_type="application/x-ndjson",  # The official media type for JSON Lines
-        headers={"Content-Disposition": "attachment; filename=user_results.jsonl"} # Changed file extension
+        media_type="application/x-ndjson", 
+        headers={"Content-Disposition": "attachment; filename=user_results.jsonl"} 
     )
