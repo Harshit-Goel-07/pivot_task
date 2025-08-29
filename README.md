@@ -105,7 +105,7 @@ python -m http.server
 Open your web browser and navigate to:
 http://localhost:8000 (or the port your frontend server is using).
 
-API Endpoints
+## API Endpoints
 The backend provides two main API endpoints:
 
 POST /search: Accepts a JSON body with a query string and a page number. It returns a paginated list of matching user records.
