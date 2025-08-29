@@ -1,20 +1,19 @@
+import os
 import json
+from typing import Optional
+from dotenv import load_dotenv
 from fastapi import FastAPI, Body
+from elasticsearch import Elasticsearch
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from elasticsearch import Elasticsearch
-from typing import Optional
 
+load_dotenv()
 
-# Create main FastAPI application.
 app = FastAPI()
 
-# Connect to Elasticsearch database.
-es = Elasticsearch("http://localhost:9200")
-INDEX_NAME = "users"
+es = Elasticsearch(f"http://localhost:{os.getenv('ES_PORT')}",  headers={"Accept": "application/vnd.elasticsearch+json; compatible-with=8"})
+INDEX_NAME = f"{os.getenv('ES_INDEX')}"
 
-# This part allows your HTML/JavaScript frontend to make requests
-# to this Python backend. It's a standard security feature.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,13 +21,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-# --- API Endpoints ---
-
-# This creates the "/search" URL for our API.
-# It listens for POST requests.
-# In main.py, replace your entire @app.post("/search") function with this block.
 
 @app.post("/search")
 def handle_search_requests(
@@ -41,10 +33,9 @@ def handle_search_requests(
     """
     print(f"Searching for: '{query}' on page {page}")
 
-    size = 15  # Using 15 to match the frontend's resultsPerPage
+    size = 15 
     from_offset = (page - 1) * size
 
-    # This is the search query we'll send to Elasticsearch.
     search_query = {
         "from": from_offset,
         "size": size,
@@ -60,7 +51,6 @@ def handle_search_requests(
     if not query:
         search_query["query"] = {"match_all": {}}
 
-    # Send the query to Elasticsearch and return the results.
     response = es.search(index=INDEX_NAME, body=search_query)
     return {
         "total": response['hits']['total']['value'],
@@ -92,13 +82,12 @@ def stream_all_users(query: Optional[str]):
             break
         
         for user in hits:
-            # Yield each user as a JSON string followed by a newline.
             yield json.dumps(user['_source']) + '\n'
         
         search_query['search_after'] = hits[-1]['sort']
 
     es.close_point_in_time(body={'id': pit_id})
-# This creates the "/download" URL for our API.
+
 @app.post("/download")
 def handle_download_requests(query: Optional[str] = Body(None, embed=True)):
     """

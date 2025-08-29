@@ -1,14 +1,17 @@
-from elasticsearch import Elasticsearch
-from elasticsearch.helpers import bulk
-from faker import Faker
+import os
 import time
+from faker import Faker
+from dotenv import load_dotenv
+from elasticsearch.helpers import bulk
+from elasticsearch import Elasticsearch
 
-ES_HOST = "http://localhost:9200"
-INDEX_NAME = "users"
+load_dotenv()
 
-NUMBER_OF_DOCUMENTS = 2500000   #~600MB dataset
+ES_HOST = f"http://localhost:{os.getenv('ES_PORT')}"
+INDEX_NAME = f"{os.getenv('ES_INDEX')}"
 
-#Elasticsearch Connection
+NUMBER_OF_DOCUMENTS = 2500000   
+
 es = Elasticsearch(ES_HOST)
 fake = Faker()
 
@@ -18,7 +21,6 @@ def create_index():
         print(f"Index '{INDEX_NAME}' already exists. Deleting it.")
         es.indices.delete(index=INDEX_NAME)
 
-    # Updated mapping with only the required fields
     mapping = {
       "mappings": {
         "properties": {
@@ -41,7 +43,6 @@ def generate_data_stream():
         if i > 0 and i % 50000 == 0:
             print(f"  Generated {i} documents...")
         
-        # Yields a document with only the 4 specified fields
         yield {
             "_index": INDEX_NAME,
             "_source": {
@@ -52,14 +53,11 @@ def generate_data_stream():
             }
         }
 
-#Main Execution
 if __name__ == "__main__":
     start_time = time.time()
     
-    # 1. Create the index with the new mapping
     create_index()
 
-    # 2. Use the bulk helper to ingest the data
     print("Ingesting data using bulk API...")
     try:
         successes, failures = bulk(es, generate_data_stream(), chunk_size=1000, request_timeout=200)
