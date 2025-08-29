@@ -1,130 +1,102 @@
-Elasticsearch Search and Download Application
-This project is a full-stack application designed to efficiently handle, search, and export large datasets. It features a Python backend using FastAPI and a vanilla JavaScript frontend that interacts with an Elasticsearch database. The system can ingest approximately 600MB of simulated user data and provides a clean interface for filtering, viewing paginated results, and downloading the filtered data as a JSONL file.
+# Elasticsearch User Search Application
 
-Screenshot
-Here is a screenshot of the final application interface:
+This project is a full-stack web application built to efficiently search, filter, and download data from a large (~600MB) dataset stored in Elasticsearch. It features a Python FastAPI backend for high-performance API endpoints and a clean, lightweight frontend built with vanilla HTML, CSS, and JavaScript.
 
-Tech Stack
-Backend:
+## Features
 
-Python 3
+-   **Efficient Data Ingestion**: A Python script generates ~3.5 million mock user records and bulk-uploads them directly into Elasticsearch without saving large files to disk.
+-   **Fast API Backend**: Built with FastAPI to provide fast, asynchronous API endpoints for search and download.
+-   **Fuzzy Search**: Implements Elasticsearch's `multi_match` query with `fuzziness` enabled, allowing users to find results even with minor typos.
+-   **Paginated Results**: The frontend displays results in a clean, paginated table, and the backend efficiently serves data page by page.
+-   **Streaming Downloads**: Users can download the complete filtered dataset as a **JSONL** (JSON Lines) file. The data is streamed from the backend to ensure low memory usage, even with millions of records.
+-   **Dockerized Database**: Elasticsearch runs in a Docker container for easy setup and a clean development environment.
 
-FastAPI (for the REST API)
+---
 
-Uvicorn (as the ASGI server)
+## Tech Stack
 
-Database / Search Engine:
+-   **Backend**: Python, FastAPI
+-   **Database**: Elasticsearch
+-   **Frontend**: HTML, CSS, Vanilla JavaScript
+-   **Containerization**: Docker
+-   **Python Libraries**: `elasticsearch`, `uvicorn`, `faker`
 
-Elasticsearch 8.x
+---
 
-Frontend:
+## Getting Started
 
-HTML5
+Follow these instructions to set up and run the project on your local machine.
 
-CSS3
+### 1. Prerequisites
 
-Vanilla JavaScript
+-   Python 3.7+
+-   Docker Desktop installed and running.
+-   Git for cloning the repository.
 
-Data Simulation:
+### 2. Clone the Repository
 
-Faker Library
-
-Environment:
-
-Docker (for running Elasticsearch)
-
-Key Features
-Efficient Data Ingestion: A Python script generates and streams ~600MB (4.5 million records) of fake user data directly into Elasticsearch without saving a large file to disk.
-
-Fast Full-Text Search: The backend leverages Elasticsearch's multi_match query to search across multiple fields (user_id, name, email, country).
-
-Typo Tolerance: The search includes fuzziness to return relevant results even with minor spelling errors.
-
-Paginated Results: The frontend displays results in a clean, paginated table to handle large query responses without overwhelming the user.
-
-Streaming Downloads: Filtered results can be downloaded as a .jsonl file. The backend streams the data directly from Elasticsearch to the user, ensuring low memory usage on the server.
-
-Setup and Installation
-Follow these steps to get the project running on your local machine.
-
-Prerequisites
-Git
-
-Python 3.10+
-
-Docker Desktop
-
-1. Clone the Repository
+Clone this repository to your local machine:
+```bash
 git clone [https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git)
 cd YOUR_REPOSITORY_NAME
+3. Setup the Backend Environment
+Create and activate a Python virtual environment:
 
-2. Set Up the Backend
-Create and activate a Python virtual environment.
+Bash
 
-# Create a virtual environment
+# On Windows
 python -m venv venv
-
-# Activate it
-# On Windows (PowerShell):
 .\venv\Scripts\Activate.ps1
-# On macOS/Linux:
-# source venv/bin/activate
 
-Install the required Python packages.
+# On macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+Install the required packages:
+
+Bash
 
 pip install -r requirements.txt
+4. Start the Services
+1. Start the Elasticsearch Container
+Make sure Docker Desktop is running, then run this command in your terminal:
 
-(Note: You will need to create a requirements.txt file by running pip freeze > requirements.txt in your activated environment.)
-
-3. Start the Elasticsearch Container
-Make sure Docker Desktop is running. Then, run the following command in your terminal to start an Elasticsearch container.
+Bash
 
 docker run -p 9200:9200 --name es-dev -e "discovery.type=single-node" -e "xpack.security.enabled=false" -d docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+2. Run the Data Ingestion Script
+This script will create the index and populate it with mock data. This process will take several minutes.
 
-4. Ingest the Data
-Navigate to the data_ingestion folder and run the script to generate and load the data into Elasticsearch. This will take several minutes.
+Bash
 
 cd data_ingestion
 python generate_and_ingest.py
 cd ..
+3. Start the FastAPI Backend Server
+From the main project directory (pivot_task), run:
 
-5. Run the Backend Server
-Start the FastAPI backend server using Uvicorn.
+Bash
 
 uvicorn main:app --reload --port 8001
+Your backend is now running at http://127.0.0.1:8001.
 
-The backend API will now be running at http://127.0.0.1:8001.
+5. Run the Frontend
+Open a new, separate terminal window.
 
-6. Run the Frontend Server
-Open a new terminal window. Navigate into the frontend folder and start a simple Python web server.
+Navigate to the frontend folder and start a simple Python web server:
+
+Bash
 
 cd frontend
-python -m http.server 8000
+python -m http.server
+(Note: This usually runs on port 8000. If that port is busy, you can specify another, like python -m http.server 8080)
 
-How to Use
-Open your web browser and navigate to http://localhost:8000.
-
-Use the search bar to filter users by their ID, name, email, or country.
-
-Use the "Next" and "Previous" buttons to navigate through the paginated results.
-
-Click the "Download Filtered Results" button to download the current search results as a user_results.jsonl file.
+6. Access the Application
+Open your web browser and navigate to:
+http://localhost:8000 (or the port your frontend server is using).
 
 API Endpoints
-The backend exposes two main endpoints:
+The backend provides two main API endpoints:
 
-POST /search
+POST /search: Accepts a JSON body with a query string and a page number. It returns a paginated list of matching user records.
 
-Accepts a JSON payload to search for users.
-
-Payload: { "query": "search_term", "page": 1 }
-
-Returns a paginated list of user objects.
-
-POST /download
-
-Accepts a JSON payload to download filtered user data.
-
-Payload: { "query": "search_term" }
-
-Streams a .jsonl file as a response.
+POST /download: Accepts a JSON body with a query string. It streams the complete set of matching user records as a user_results.jsonl file.
